@@ -29,6 +29,7 @@ body, html {
   .logo {
     height: 50px;
     margin-right: 20px;
+    border-radius: 12px;
   }
   
   .nav-button {
