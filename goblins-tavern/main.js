@@ -1,18 +1,36 @@
-
 document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("discoverButton").addEventListener("click", () => {
-        document.getElementById("gameSection")?.scrollIntoView({ behavior: 'smooth' });
+    const homeBtn = document.getElementById("homeButton");
+    const recoBtn = document.getElementById("recoButton");
+    const loginBtn = document.getElementById("loginButton");
+    const discoverBtn = document.getElementById("discoverButton");
+    const gameSection = document.getElementById("gameSection");
+  
+    // HOME button - go to homepage
+    if (homeBtn) {
+      homeBtn.addEventListener("click", () => {
+        window.location.href = "home.html";
       });
-    
-document.getElementById("homeButton").addEventListener("click", () => {
-    window.location.href = "home.html";
-      });
-    
-document.getElementById("recoButton").addEventListener("click", () => {
+    }
+  
+    // RECOMMENDATIONS button
+    if (recoBtn) {
+      recoBtn.addEventListener("click", () => {
         window.location.href = "recommandations.html";
       });
-    
-document.getElementById("loginButton").addEventListener("click", () => {
+    }
+  
+    // LOGIN button
+    if (loginBtn) {
+      loginBtn.addEventListener("click", () => {
         window.location.href = "login.html";
       });
-    });
+    }
+  
+    // DISCOVER HERE button scrolls to game section
+    if (discoverBtn && gameSection) {
+      discoverBtn.addEventListener("click", () => {
+        gameSection.scrollIntoView({ behavior: "smooth" });
+      });
+    }
+  });
+  
