@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const discoverBtn = document.getElementById("discoverButton");
     const gameSection = document.getElementById("gameSection");
     const logoutBtn = document.getElementById("logoutButton");
+    const superGame = document.getElementById("super-games");
   
     if (homeBtn) {
       homeBtn.addEventListener("click", () => {
@@ -29,6 +30,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
           window.location.href = "home.html";
+        });
+      }
+      if (superGame) {
+        superGame.addEventListener("click", () => {
+          window.location.href = "recommandations.html";
         });
       }
   });
