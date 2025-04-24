@@ -146,7 +146,7 @@ body, html {
     justify-content: space-between;
     align-items: center;
     padding: 50px 60px;
-    background-color: black; /* fallback */
+    background-color: black; 
     color: white;
     font-size: 18px;
     gap: 30px;
@@ -494,8 +494,8 @@ body.reco-page {
   }
   
   .nav-button.active {
-    background-color: #ffffff33; /* Semi-transparent white */
-    color: #75855d; /* Gold or any color you like */
+    background-color: #ffffff33; 
+    color: #75855d; 
     font-weight: bold;
     border-radius: 5px;
   }
