@@ -8,23 +8,93 @@
   <script src="../main.js" defer></script>
 </head>
 
-<body>
+<body class="reco-page">
 
     <nav class="top-nav">
-      <img src="../img/Designer.jpeg" alt="Goblin's Logo" class="logo" />
+        <img src="../img/Designer.jpeg" alt="Goblin's Logo" class="logo" />
+  
+        <div class="nav-links">
+          <button class="nav-button" id="homeButton">HOME</button>
+          <button class="nav-button" id="recoButton">RECOMMENDATIONS</button>
+          <button class="nav-button" id="loginButton">LOGIN</button>
+  
+        </div>
+  
+        <div class="search-container">
+          <input type="text" placeholder="RESEARCH" class="search-bar" />
+          <i class="icon-search"></i>
+        </div>
+      </nav>
 
-      <div class="nav-links">
-        <button class="nav-button" id="homeButton">HOME</button>
-        <button class="nav-button" id="recoButton">RECOMMENDATIONS</button>
-        <button class="nav-button" id="loginButton">LOGIN</button>
+    <div class="reco-wrapper">
+      <div class="preferences-box">
+        <h3>CHOOSE YOUR PREFERENCES :</h3>
+        <form id="categoryForm" class="preferences-form">
+          <div class="column">
+            <label for="pref1">Publication Year</label>
+            <select id="pref1" name="pref1">
+              <option value="">-- Select --</option>
+              <option value="one">before 2000</option>
+              <option value="two">2000 - 2010</option>
+              <option value="three">2010 - 2020</option>
+              <option value="four">2020 - 2025</option>
+            </select>
+  
+            <label for="pref2">Mininum Players</label>
+            <select id="pref2" name="pref2">
+              <option value="">-- Select --</option>
+              <option value="one">Solo game</option>
+              <option value="two">Two</option>
+              <option value="three">Four</option>
+              <option value="four">six</option>
+            </select>
+          </div>
+  
+          <div class="column">
+            <label for="pref3">Playing Time</label>
+            <select id="pref3" name="pref3">
+              <option value="">-- Select --</option>
+              <option value="one">10 - 20 min</option>
+              <option value="two">Less than 1h</option>
+              <option value="three">More than 1h</option>
+              <option value="four">More than 2h</option>
+              <option value="five">Multiple session games</option>
+            </select>
+  
+            <label for="pref4">Maximum Players</label>
+            <select id="pref4" name="pref4">
+              <option value="">-- Select --</option>
+              <option value="one">Two</option>
+              <option value="two">Four</option>
+              <option value="three">Six</option>
+              <option value="four">Eight</option>
+              <option value="five">Twelve</option>
+            </select>
+          </div>
+  
+          <button type="button" id="searchBtn">RESEARCH</button>
+
+            <div class="text-inputs">
+                <label for="keywords1">Game Name</label>
+                <input type="text" id="keywords1" placeholder="Enter a keyword..." />
+  
+                <label for="keywords2">Publisher Name</label>
+                <input type="text" id="keywords2" placeholder="Enter another..." />
+  
+                <label for="keywords3">Mecanics</label>
+                <input type="text" id="keywords3" placeholder="Last one ? :3" />
+            </div>
+  
+        </form>
+        <div id="resultsContainer" style="margin-top: 30px; color: white;"></div>
 
       </div>
-
-      <div class="search-container">
-        <input type="text" placeholder="RESEARCH" class="search-bar" />
-        <i class="icon-search"></i>
+  
+      <div class="image-box">
+        <img src="../img/image.png" alt="Preference Illustration" />
       </div>
-    </nav>
-
-</body>
+    </div>
+  </body>
+  
+  
 </html>

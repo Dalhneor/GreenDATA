@@ -57,3 +57,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchBtn = document.getElementById("searchBtn");
+  
+    if (searchBtn) {
+      searchBtn.addEventListener("click", () => {
+        //dropdown
+        const selects = document.querySelectorAll(".preferences-form select");
+        const selectedOptions = Array.from(selects).map(select => select.value);
+  
+        
+        const keywords = [
+          document.getElementById("keywords1").value,
+          document.getElementById("keywords2").value,
+          document.getElementById("keywords3").value
+        ];
+  
+        //display ou filter bref à voir
+        const resultsContainer = document.getElementById("resultsContainer");
+        if (resultsContainer) {
+          resultsContainer.innerHTML = `
+            <h3>You selected:</h3>
+            <ul>
+              ${selectedOptions.map(opt => `<li>Category: ${opt}</li>`).join("")}
+              ${keywords.map((kw, i) => kw ? `<li>Keyword ${i + 1}: ${kw}</li>` : "").join("")}
+            </ul>
+          `;
+        } else {
+          console.log("Selected categories:", selectedOptions);
+          console.log("Entered keywords:", keywords);
+        }
+      });
+    }
+  });
+  

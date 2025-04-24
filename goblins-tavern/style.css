@@ -212,3 +212,117 @@ body, html {
     z-index: -1;
   }
   
+  
+body.reco-page {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #1d120d;
+    color: #ffffff;
+  }
+  
+  
+  .reco-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 60px;
+    gap: 40px;
+  }
+  
+  
+  .preferences-box {
+    background-color: #2d1f17;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    width: 50%;
+  }
+  
+  .preferences-box h3 {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #ccc;
+    letter-spacing: 1px;
+  }
+  
+ /*dropdown*/
+  .preferences-form {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  
+  .preferences-form .column {
+    display: flex;
+    flex-direction: column;
+  }
+  
+ 
+  .preferences-form label {
+    color: #d0d0d0;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  
+/*keywrd*/
+  .preferences-form select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #3a2c24;
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 20px;
+    width: 200px;
+  }
+  
+
+  #searchBtn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background-color: #75855d;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: center;
+  }
+  
+  #searchBtn:hover {
+    background-color: #91a074;
+  }
+  
+
+  .image-box img {
+    max-width: 400px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.3);
+  }
+
+  .text-inputs {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .text-inputs label {
+    font-size: 16px;
+    color: #d0d0d0;
+    margin-bottom: 4px;
+  }
+  
+  .text-inputs input[type="text"] {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #3a2c24;
+    color: #ffffff;
+    font-size: 14px;
+  }
+  
