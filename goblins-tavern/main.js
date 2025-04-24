@@ -97,3 +97,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("manageForm");
+    const submitBtn = document.getElementById("submitBtn");
+  
+    submitBtn.addEventListener("click", () => {
+      const formData = new FormData(form);
+  
+      const data = {
+        boardGameId: formData.get("BD_ID"),
+      title: formData.get("Title"),
+      category: formData.get("Category"),
+      description: formData.get("Description"),
+      releaseDate: formData.get("ReleaseDate"),
+      minPlayers: formData.get("MinP"),
+      maxPlayers: formData.get("MaxP"),
+      playingTime: formData.get("TimeP"),
+      minAge: formData.get("Minage"),
+      publisher: formData.get("Publisher"),
+      designer: formData.get("Designer"),
+      wanting: formData.get("Wanting"),
+      artworkUrl: formData.get("ArtworkUrl"),
+      userRating: formData.get("UserR"),
+      averageRating: formData.get("AvgR"),
+      ratingAttribute: formData.get("AttrR"),
+      gameMechanics: formData.get("MecaG"),
+      keywords: []
+      };
+  
+      // Optional: build a keyword array (simplified version)
+      const keywordsRaw = `${data.title} ${data.category} ${data.description}`;
+      data.keywords = keywordsRaw
+        .toLowerCase()
+        .split(/\s+/) // Split on spaces
+        .filter(word => word.length > 2); // Filter out small/common words
+  
+      console.log("Prepared Data for SQL:", data);
+      
+      // On peu balancer dans du json après
+  });
+});
