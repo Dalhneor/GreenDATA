@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Game Showcase</title>
   <link rel="stylesheet" href="../style.css" />
+  <script src="../mains.js" defer></script>
 </head>
 <body>
   <div class="home-page">
@@ -13,9 +14,10 @@
       <img src="../img/Designer.jpeg" alt="Goblin's Logo" class="logo" />
 
       <div class="nav-links">
-        <button class="nav-button">HOME</button>
-        <button class="nav-button">RECOMMENDATIONS</button>
-        <button class="nav-button">LOGIN</button>
+        <button class="nav-button" id="homeButton">HOME</button>
+        <button class="nav-button" id="recoButton">RECOMMENDATIONS</button>
+        <button class="nav-button" id="loginButton">LOGIN</button>
+
       </div>
 
       <div class="search-container">
@@ -32,7 +34,7 @@
         <h4>Warhammer 40,000 is a dark,<br>
         futuristic tabletop wargame where humanity battles aliens,<br>
         demons, and itself in an endless war across the galaxy.</h4>
-        <button class="discover-button" onclick="scrollToGame()">DISCOVER HERE</button>
+        <button class="discover-button" id="discoverButton">DISCOVER HERE</button>
       </div>
     </section>
 
@@ -57,6 +59,7 @@
     </footer>
 
   </div>
-  <script src="script.js"></script>
+
 </body>
 </html>
+
