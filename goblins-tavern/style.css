@@ -143,7 +143,72 @@ body, html {
     padding: 10px 20px;
     background-color: #e0e0e0;
     color: black;
+    border-radius: 12px;
     border: none;
     cursor: pointer;
+  }
+
+  .login-container {
+    max-width: 400px;
+    margin: 120px auto;
+    background-color: rgba(51, 7, 7, 0.9); 
+    padding: 40px 30px;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  }
+  
+  .login-container h2 {
+    margin-bottom: 25px;
+  }
+  
+  .login-container input {
+    display: block;
+    width: 80%;
+    margin: 15px auto;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .login-container button {
+    width: 60%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #d3d3d3; 
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-container button:hover {
+    background-color: #ebdcd7; 
+  }
+  
+  .login-message {
+    margin-top: 15px;
+    font-size: 0.9rem;
+  }
+
+  .login-page {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: url("img/Cover.png") no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+  }
+  
+  .login-page::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: -1;
   }
   
