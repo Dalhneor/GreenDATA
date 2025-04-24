@@ -125,12 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
       keywords: []
       };
   
-      // Optional: build a keyword array (simplified version)
       const keywordsRaw = `${data.title} ${data.category} ${data.description}`;
       data.keywords = keywordsRaw
         .toLowerCase()
-        .split(/\s+/) // Split on spaces
-        .filter(word => word.length > 2); // Filter out small/common words
+        .split(/\s+/)
+        .filter(word => word.length > 2); 
   
       console.log("Prepared Data for SQL:", data);
       
