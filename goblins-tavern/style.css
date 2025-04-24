@@ -196,7 +196,7 @@ body, html {
   .login-page {
     margin: 0;
     font-family: 'Arial', sans-serif;
-    background: url("img/Cover.png") no-repeat center center fixed;
+    background: url("img/fond.png") no-repeat center center fixed;
     background-size: cover;
     position: relative;
   }
