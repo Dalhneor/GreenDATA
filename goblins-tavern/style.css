@@ -1,0 +1,149 @@
+body, html {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .home-page {
+    font-family: 'Arial', sans-serif;
+    color: #ffffff;
+    background-color: #1a1a1a;
+  }
+  
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2e0e0e;
+    padding: 10px 40px;
+    color: white;
+  }
+  
+  .nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+  }
+  
+  .logo {
+    height: 50px;
+    margin-right: 20px;
+  }
+  
+  .nav-button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    margin: 0 10px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-button::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease;
+  }
+  
+  .nav-button:hover::after {
+    width: 100%;
+  }
+  
+  .nav-button:hover {
+    color: #d3d3d3;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .search-container {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-bar {
+    padding: 5px;
+    border: none;
+  }
+  
+  .hero {
+    position: relative;
+    text-align: left;
+  }
+  
+  .hero-img {
+    width: 100%;
+    height: auto;
+  }
+  
+  .recommendation {
+    position: absolute;
+    top: 20%;
+    right: 10%;
+    color: rgb(0, 0, 0);
+  }
+  
+  .discover-button {
+    background-color: #d3d3d3;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .discover-button:hover {
+    background-color: #c0c0c0;
+  }
+  
+  .game-description {
+    display: flex;
+    background-color: #78805b;
+    padding: 30px;
+  }
+  
+  .text-description {
+    flex: 1;
+    color: #fff;
+    padding-right: 20px;
+  }
+  
+  .miniature-img {
+    width: 300px;
+    height: auto;
+  }
+  
+  section {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .footer {
+    background-color: #52473a;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .super-games {
+    padding: 10px 20px;
+    background-color: #e0e0e0;
+    color: black;
+    border: none;
+    cursor: pointer;
+  }
+  
