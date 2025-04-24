@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById("loginButton");
     const discoverBtn = document.getElementById("discoverButton");
     const gameSection = document.getElementById("gameSection");
+    const logoutBtn = document.getElementById("logoutButton");
   
     if (homeBtn) {
       homeBtn.addEventListener("click", () => {
@@ -25,6 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
         gameSection.scrollIntoView({ behavior: "smooth" });
       });
     }
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          window.location.href = "home.html";
+        });
+      }
   });
   
 
