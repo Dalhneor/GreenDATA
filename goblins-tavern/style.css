@@ -67,7 +67,7 @@ body, html {
 
   nav a {
     position: relative;
-    color: #000; /* ou la couleur que tu veux */
+    color: #000; 
     text-decoration: none;
     font-weight: 500;
     padding: 0.5rem;
@@ -443,7 +443,7 @@ body.reco-page {
   .column {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* espacement entre chaque label + champ */
+    gap: 15px; 
   }
   
   .column label {

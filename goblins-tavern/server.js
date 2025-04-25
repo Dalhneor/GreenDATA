@@ -7,12 +7,12 @@ const app = express();
 const db = new sqlite3.Database('./database/boardgames.sqlite');
 const PORT = 3000;
 
-// Middlewares
+
 app.use(cors());
 app.use(express.static('HTML'));
 app.use(express.json());
 
-// 🔹 GET : Liste de tous les jeux (limité à 100)
+
 app.get('/api/boardgames', (req, res) => {
   const query = `
     SELECT 
@@ -30,14 +30,14 @@ app.get('/api/boardgames', (req, res) => {
   });
 });
 
-// 🔹 POST : Recherche avancée avec filtres
+
 app.post('/api/search', (req, res) => {
   const { year, minPlayers, maxPlayers, playtime, keywords } = req.body;
 
   let query = `SELECT * FROM Board_Game WHERE 1=1`;
   const params = [];
 
-  // Filtres dynamiques
+
   if (year) {
     if (year === "one") query += ` AND yearpublished < 2000`;
     if (year === "two") query += ` AND yearpublished BETWEEN 2000 AND 2010`;
@@ -81,7 +81,7 @@ app.post('/api/search', (req, res) => {
   });
 });
 
-// 🚀 Lancement du serveur
+
 app.listen(PORT, () => {
   console.log(`✅ Server ready at http://localhost:${PORT}`);
 });

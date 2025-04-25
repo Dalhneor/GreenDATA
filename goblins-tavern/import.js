@@ -5,7 +5,7 @@ const csv = require('csv-parser');
 const db = new sqlite3.Database('./database/boardgames.sqlite');
 
 db.serialize(() => {
-  // MAIN table
+  
   db.run(`CREATE TABLE IF NOT EXISTS Board_Game (
     id_bg INTEGER PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -71,7 +71,7 @@ db.serialize(() => {
 
   links.forEach(query => db.run(query));
 
-  // CSV import
+  // CSV 
   fs.createReadStream('./database/boardgameDB.csv')
     .pipe(csv({ separator: ';' }))
     .on('data', (row) => {
@@ -99,17 +99,16 @@ db.serialize(() => {
         [id, usersRated, average, id]
       );
 
-      // Properly parse Python-style stringified lists like: ['Animals', 'Card Game']
       const parseList = (field) => {
         if (!field || typeof field !== 'string') return [];
-        // Remove square brackets if present
+
         field = field.trim();
         if (field.startsWith('[') && field.endsWith(']')) {
           field = field.slice(1, -1);
         }
-        // Split the string by comma
+        //split ,
         const items = field.split(',');
-        // Clean each item
+        //clean  item
         return items
           .map(item => item.trim().replace(/^['"]|['"]$/g, ''))
           .filter(item => item.length > 0);
