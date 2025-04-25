@@ -64,6 +64,29 @@ body, html {
     color: #d3d3d3;
     background-color: rgba(255, 255, 255, 0.2);
   }
+
+  nav a {
+    position: relative;
+    color: #000; /* ou la couleur que tu veux */
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #247BA0; /* la couleur du soulignement */
+    transition: width 0.3s ease;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
   
   .search-container {
     margin-left: auto;
