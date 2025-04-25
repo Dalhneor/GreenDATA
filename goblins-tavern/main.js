@@ -112,24 +112,28 @@ document.addEventListener("DOMContentLoaded", () => {
   
       const data = {
         boardGameId: formData.get("BD_ID"),
-      title: formData.get("Title"),
-      category: formData.get("Category"),
-      description: formData.get("Description"),
-      releaseDate: formData.get("ReleaseDate"),
-      minPlayers: formData.get("MinP"),
-      maxPlayers: formData.get("MaxP"),
-      playingTime: formData.get("TimeP"),
-      minAge: formData.get("Minage"),
-      publisher: formData.get("Publisher"),
-      designer: formData.get("Designer"),
-      wanting: formData.get("Wanting"),
-      artworkUrl: formData.get("ArtworkUrl"),
-      userRating: formData.get("UserR"),
-      averageRating: formData.get("AvgR"),
-      ratingAttribute: formData.get("AttrR"),
-      gameMechanics: formData.get("MecaG"),
-      keywords: []
+        title: formData.get("Title"),
+        description: formData.get("Description"),
+        releaseDate: formData.get("ReleaseDate"),
+        minPlayers: formData.get("MinP"),
+        maxPlayers: formData.get("MaxP"),
+        playingTime: formData.get("TimeP"),
+        minAge: formData.get("Minage"),
+        owned: formData.get("Owned"),
+        designer: formData.get("Designer"),
+        wanting: formData.get("Wanting"),
+        artworkUrl: formData.get("ArtworkUrl"),
+        publisher: formData.get("Publisher"),
+        category: formData.get("Category"),
+        gameMechanics: formData.get("MecaG"),
+        ratingId: formData.get("IDR"),
+        userRating: formData.get("UserR"),
+        averageRating: formData.get("AvgR"),
+        gameExtensionId: formData.get("Ex_IDG"),
+        extensionName: formData.get("ExName"),
+        keywords: [] // Optional array to store extra tags/keywords if needed
       };
+      
   
       const keywordsRaw = `${data.title} ${data.category} ${data.description}`;
       data.keywords = keywordsRaw
