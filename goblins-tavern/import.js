@@ -129,7 +129,7 @@ db.serialize(() => {
       insertEntities(parseList(row.boardgamedesigner), 'BG_Designer', 'Designed_By', 'designer_name');
       insertEntities(parseList(row.boardgamepublisher), 'BG_Publisher', 'Published_By', 'publisher_name');
 
-      // Handle expansions
+      
       const expansions = parseList(row.boardgameexpansion);
       expansions.forEach((exp, i) => {
         const fakeIdBge = id * 1000 + i;

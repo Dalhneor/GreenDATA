@@ -73,28 +73,29 @@
             </select>
           </div>
   
-          <button type="button" id="searchBtn">RESEARCH</button>
-
-            <div class="text-inputs">
-                <label for="keywords1">Game Name</label>
-                <input type="text" id="keywords1" placeholder="Enter a keyword..." />
-  
-                <label for="keywords2">Publisher Name</label>
-                <input type="text" id="keywords2" placeholder="Enter another..." />
-  
-                <label for="keywords3">Mecanics</label>
-                <input type="text" id="keywords3" placeholder="Last one ? :3" />
-            </div>
-  
+          <div class="text-inputs">
+            <label for="keywords1">Game Name</label>
+            <input type="text" id="keywords1" placeholder="Enter a keyword..." />
+          
+            <label for="keywords3">Mecanics</label>
+            <input type="text" id="keywords3" placeholder="Last one ? :3" />
+          </div>        
+                    
+          
         </form>
-        <div id="resultsContainer" style="margin-top: 30px; color: white;"></div>
 
+        <div class="button-group">
+          <button type="button" id="searchBtn" class="form-button">RESEARCH</button>
+          <button type="button" id="resetBtn" class="form-button">RESET</button>
+        </div> 
       </div>
   
       <div class="image-box">
         <img src="../img/image.png" alt="Preference Illustration" />
       </div>
+
     </div>
+    <div id="resultsContainer"></div>
   </body>
   
   
