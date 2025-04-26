@@ -54,13 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const playtime = document.getElementById("pref3").value;
       const maxPlayers = document.getElementById("pref4").value;
 
-      
       const keywords = [];
       const kw1 = document.getElementById("keywords1");
       const kw3 = document.getElementById("keywords3");
       if (kw1 && kw1.value.trim() !== "") keywords.push(kw1.value.trim());
       if (kw3 && kw3.value.trim() !== "") keywords.push(kw3.value.trim());
-      
+
       const searchData = { year, minPlayers, maxPlayers, playtime, keywords };
 
       try {
@@ -121,46 +120,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (addBtn) {
     addBtn.addEventListener("click", async () => {
-      const bg_id = parseInt(document.getElementById("bg_id").value);
-      const title = document.getElementById("title").value;
-      const description = document.getElementById("description").value;
-      const release_date = parseInt(document.getElementById("release_date").value) || 0;
-      const min_p = parseInt(document.getElementById("min_p").value) || 0;
-      const max_p = parseInt(document.getElementById("max_p").value) || 0;
-      const time_p = parseInt(document.getElementById("time_p").value) || null;
-      const minage = parseInt(document.getElementById("minage").value) || 0;
-      const owned = parseInt(document.getElementById("owned").value) || 0;
-      const designer = document.getElementById("designer").value || '';
-      const wanting = parseInt(document.getElementById("wanting").value) || 0;
-      const artwork_url = document.getElementById("artwork_url").value || '';
-      const publisher = document.getElementById("publisher").value || '';
-      const category = document.getElementById("category").value || '';
-      const meca_g = document.getElementById("meca_g").value || '';
-      const rating_id = parseInt(document.getElementById("rating_id").value);
-      const user_rating = parseInt(document.getElementById("user_rating").value) || 0;
-      const average_rating = parseFloat(document.getElementById("average_rating").value) || 0;
-      const game_extention_id = parseInt(document.getElementById("game_extention_id").value);
-      const extansion_name = document.getElementById("extansion_name").value;
+      const bg_id = document.getElementById("bg_id");
+      const title = document.getElementById("title");
+      const description = document.getElementById("description");
+      const release_date = document.getElementById("release_date");
+      const min_p = document.getElementById("min_p");
+      const max_p = document.getElementById("max_p");
+      const time_p = document.getElementById("time_p");
+      const minage = document.getElementById("minage");
+      const owned = document.getElementById("owned");
+      const designer = document.getElementById("designer");
+      const wanting = document.getElementById("wanting");
+      const artwork_url = document.getElementById("artwork_url");
+      const publisher = document.getElementById("publisher");
+      const category = document.getElementById("category");
+      const meca_g = document.getElementById("meca_g");
+      const rating_id = document.getElementById("rating_id");
+      const user_rating = document.getElementById("user_rating");
+      const average_rating = document.getElementById("average_rating");
+      const game_extention_id = document.getElementById("game_extention_id");
+      const extansion_name = document.getElementById("extansion_name");
 
-      const addData = { bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, designer, wanting, artwork_url, publisher, category, meca_g, rating_id, user_rating, average_rating, game_extention_id, extansion_name};
-    
+      const mandatoryFields = [bg_id, title, description, release_date, min_p, max_p, time_p, minage];
+  
+      let firstInvalid = null;
+  
+      mandatoryFields.forEach(field => field.style.border = "");
+
+      mandatoryFields.forEach(field => {
+        if (!field.value.trim()) {
+          field.style.border = "2px solid red";
+          if (!firstInvalid) firstInvalid = field;
+        }
+      });
+  
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+        alert("Please fill in all mandatory fields highlighted in red.");
+        return; // Stop if fields are missing
+      }
+  
+      const addData = {
+        bg_id: parseInt(bg_id.value),
+        title: title.value,
+        description: description.value,
+        release_date: parseInt(release_date.value) || 0,
+        min_p: parseInt(min_p.value) || 0,
+        max_p: parseInt(max_p.value) || 0,
+        time_p: parseInt(time_p.value) || 0,
+        minage: parseInt(minage.value) || 0,
+        owned: parseInt(owned.value) || 0,
+        designer: designer.value || '',
+        wanting: parseInt(wanting.value) || 0,
+        artwork_url: artwork_url.value || '',
+        publisher: publisher.value || '',
+        category: category.value || '',
+        meca_g: meca_g.value || '',
+        rating_id: parseInt(rating_id.value),
+        user_rating: parseInt(user_rating.value) || 0,
+        average_rating: parseFloat(average_rating.value) || 0,
+        game_extention_id: parseInt(game_extention_id.value),
+        extansion_name: extansion_name.value
+      };
+  
       try {
         const response = await fetch("http://localhost:3000/api/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(addData)
         });
-
-        const results = await response.json();
-
-        if (response.ok) {
-          alert("Tout est ok", results);
+  
+        const result = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(result.message || "Failed to add the board game.");
         }
-      }
-
-      catch (error) {
+  
+        alert("Board game added successfully!");
+      } catch (error) {
         console.error("Add error:", error);
+        alert(error.message || "An unexpected error occurred.");
       }
     });
-  }
+  }  
 });

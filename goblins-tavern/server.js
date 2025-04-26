@@ -82,17 +82,95 @@ app.post('/api/search', (req, res) => {
 });
 
 app.post('/api/add', (req, res) => {
-  const { bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, designer, wanting, artwork_url, publisher, category, meca_g, rating_id, user_rating, average_rating, game_extention_id, extansion_name} = req.body;
+  const {
+    bg_id, title, description, release_date,
+    min_p, max_p, time_p, minage,
+    owned, designer, wanting, artwork_url,
+    publisher, category, meca_g,
+    rating_id, user_rating, average_rating,
+    game_extention_id, extansion_name
+  } = req.body;
 
-  const sql = `INSERT OR IGNORE INTO Board_Game (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img) VALUES (?, ?) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  // ✅ Correct mandatory fields only
+  if (
+    !bg_id || !title || !description || !release_date ||
+    min_p == null || max_p == null || time_p == null || minage == null
+  ) {
+    return res.status(400).json({ message: "Please fill in all mandatory fields." });
+  }
 
+  // 🛠 Insert boardgame
+  const sql = `
+    INSERT OR IGNORE INTO Board_Game 
+    (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
 
-  db.all(sql, [bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
+  db.run(sql, [bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url], function (err) {
+    if (err) {
+      console.error('Error inserting Board_Game:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+
+    const responses = [];
+
+    // 🛠 Helper to handle multiple insertions with name as PK
+    const insertMultiple = (valuesString, insertTable, linkTable, nameColumn, linkNameColumn) => {
+      if (!valuesString) return;
+
+      const values = valuesString.split(',').map(val => val.trim());
+      values.forEach(value => {
+        db.get(`SELECT ${nameColumn} FROM ${insertTable} WHERE ${nameColumn} = ?`, [value], (err, row) => {
+          if (err) {
+            console.error(`Error selecting from ${insertTable}:`, err.message);
+            return;
+          }
+
+          if (!row) {
+            db.run(`INSERT INTO ${insertTable} (${nameColumn}) VALUES (?)`, [value], (err) => {
+              if (err) {
+                console.error(`Error inserting into ${insertTable}:`, err.message);
+                return;
+              }
+              db.run(`INSERT INTO ${linkTable} (id_bg, ${linkNameColumn}) VALUES (?, ?)`, [bg_id, value]);
+            });
+          } else {
+            db.run(`INSERT INTO ${linkTable} (id_bg, ${linkNameColumn}) VALUES (?, ?)`, [bg_id, value]);
+          }
+        });
+      });
+    };
+
+    // ✅ Designers
+    insertMultiple(designer, 'BG_Designer', 'Designed_By', 'designer_name', 'designer_name');
+
+    // ✅ Publishers
+    insertMultiple(publisher, 'BG_Publisher', 'Published_By', 'publisher_name', 'publisher_name');
+
+    // ✅ Categories
+    insertMultiple(category, 'BG_Category', 'Is_Of_Category', 'category_name', 'category_name');
+
+    // ✅ Mechanics
+    insertMultiple(meca_g, 'BG_Mechanic', 'Uses_Mechanic', 'mechanic_name', 'mechanic_name');
+
+    // ✅ Rating (simplified)
+    if (rating_id && user_rating !== undefined && average_rating !== undefined) {
+      db.run(`INSERT OR IGNORE INTO Rating (id_rating, users_rated, average, id_bg) VALUES (?, ?, ?, ?)`,
+        [rating_id, user_rating, average_rating, bg_id]);
+      responses.push('Rating inserted');
+    }
+
+    // ✅ Expansion (simplified)
+    if (game_extention_id && extansion_name) {
+      db.run(`INSERT OR IGNORE INTO BG_Expansion (id_bge, name, id_bg) VALUES (?, ?, ?)`,
+        [game_extention_id, extansion_name, bg_id]);
+      responses.push('Expansion inserted');
+    }
+
+    res.status(200).json({ message: "Board game and related data added (with multi-insertions by name)", details: responses });
   });
-
 });
+
 
 app.listen(PORT, () => {
   console.log(`✅ Server ready at http://localhost:${PORT}`);
