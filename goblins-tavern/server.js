@@ -91,7 +91,6 @@ app.post('/api/add', (req, res) => {
     game_extention_id, extansion_name
   } = req.body;
 
-  // ✅ Correct mandatory fields only
   if (
     !bg_id || !title || !description || !release_date ||
     min_p == null || max_p == null || time_p == null || minage == null
@@ -99,7 +98,6 @@ app.post('/api/add', (req, res) => {
     return res.status(400).json({ message: "Please fill in all mandatory fields." });
   }
 
-  // 🛠 Insert boardgame
   const sql = `
     INSERT OR IGNORE INTO Board_Game 
     (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img)
@@ -114,7 +112,6 @@ app.post('/api/add', (req, res) => {
 
     const responses = [];
 
-    // 🛠 Helper to handle multiple insertions with name as PK
     const insertMultiple = (valuesString, insertTable, linkTable, nameColumn, linkNameColumn) => {
       if (!valuesString) return;
 
@@ -141,26 +138,20 @@ app.post('/api/add', (req, res) => {
       });
     };
 
-    // ✅ Designers
     insertMultiple(designer, 'BG_Designer', 'Designed_By', 'designer_name', 'designer_name');
 
-    // ✅ Publishers
     insertMultiple(publisher, 'BG_Publisher', 'Published_By', 'publisher_name', 'publisher_name');
 
-    // ✅ Categories
     insertMultiple(category, 'BG_Category', 'Is_Of_Category', 'category_name', 'category_name');
 
-    // ✅ Mechanics
     insertMultiple(meca_g, 'BG_Mechanic', 'Uses_Mechanic', 'mechanic_name', 'mechanic_name');
 
-    // ✅ Rating (simplified)
     if (rating_id && user_rating !== undefined && average_rating !== undefined) {
       db.run(`INSERT OR IGNORE INTO Rating (id_rating, users_rated, average, id_bg) VALUES (?, ?, ?, ?)`,
         [rating_id, user_rating, average_rating, bg_id]);
       responses.push('Rating inserted');
     }
 
-    // ✅ Expansion (simplified)
     if (game_extention_id && extansion_name) {
       db.run(`INSERT OR IGNORE INTO BG_Expansion (id_bge, name, id_bg) VALUES (?, ?, ?)`,
         [game_extention_id, extansion_name, bg_id]);
@@ -173,5 +164,5 @@ app.post('/api/add', (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`✅ Server ready at http://localhost:${PORT}`);
+  console.log(`Server ready at http://localhost:${PORT}`);
 });
