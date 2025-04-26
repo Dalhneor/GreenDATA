@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     discoverBtn.addEventListener("click", () => gameSection.scrollIntoView({ behavior: "smooth" }));
   }
 
+  //admin log
   const form = document.getElementById("loginForm");
   const loginMessage = document.getElementById("loginMessage");
 
@@ -24,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const username = form.username.value.trim();
       const password = form.password.value;
-
       if (
         (username === "admin1" || username === "SuperAdmin") &&
         password === "1234"
@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // game search
   const searchBtn = document.getElementById("searchBtn");
   const resultsContainer = document.getElementById("resultsContainer");
   const searchForm = document.getElementById("categoryForm");
@@ -53,13 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const playtime = document.getElementById("pref3").value;
       const maxPlayers = document.getElementById("pref4").value;
 
+      
       const keywords = [];
       const kw1 = document.getElementById("keywords1");
       const kw3 = document.getElementById("keywords3");
-
       if (kw1 && kw1.value.trim() !== "") keywords.push(kw1.value.trim());
       if (kw3 && kw3.value.trim() !== "") keywords.push(kw3.value.trim());
-
+      
       const searchData = { year, minPlayers, maxPlayers, playtime, keywords };
 
       try {
@@ -94,14 +95,12 @@ document.addEventListener("DOMContentLoaded", () => {
               `;
               resultsContainer.appendChild(card);
             });
-
           } else {
             resultsContainer.innerHTML = "<p style='color:white'>No results found.</p>";
           }
         } else {
           resultsContainer.innerHTML = `<p>Error: ${results.error}</p>`;
         }
-
       } catch (error) {
         console.error("Search error:", error);
         if (resultsContainer) {
