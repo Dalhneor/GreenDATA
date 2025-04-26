@@ -81,6 +81,18 @@ app.post('/api/search', (req, res) => {
   });
 });
 
+app.post('/api/add', (req, res) => {
+  const { bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, designer, wanting, artwork_url, publisher, category, meca_g, rating_id, user_rating, average_rating, game_extention_id, extansion_name} = req.body;
+
+  const sql = `INSERT OR IGNORE INTO Board_Game (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img) VALUES (?, ?) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+
+  db.all(sql, [bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+
+});
 
 app.listen(PORT, () => {
   console.log(`✅ Server ready at http://localhost:${PORT}`);

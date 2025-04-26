@@ -116,4 +116,51 @@ document.addEventListener("DOMContentLoaded", () => {
       if (resultsContainer) resultsContainer.innerHTML = "";
     });
   }
+
+  const addBtn = document.getElementById("addBtn");
+
+  if (addBtn) {
+    addBtn.addEventListener("click", async () => {
+      const bg_id = parseInt(document.getElementById("bg_id").value);
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const release_date = parseInt(document.getElementById("release_date").value) || 0;
+      const min_p = parseInt(document.getElementById("min_p").value) || 0;
+      const max_p = parseInt(document.getElementById("max_p").value) || 0;
+      const time_p = parseInt(document.getElementById("time_p").value) || null;
+      const minage = parseInt(document.getElementById("minage").value) || 0;
+      const owned = parseInt(document.getElementById("owned").value) || 0;
+      const designer = document.getElementById("designer").value || '';
+      const wanting = parseInt(document.getElementById("wanting").value) || 0;
+      const artwork_url = document.getElementById("artwork_url").value || '';
+      const publisher = document.getElementById("publisher").value || '';
+      const category = document.getElementById("category").value || '';
+      const meca_g = document.getElementById("meca_g").value || '';
+      const rating_id = parseInt(document.getElementById("rating_id").value);
+      const user_rating = parseInt(document.getElementById("user_rating").value) || 0;
+      const average_rating = parseFloat(document.getElementById("average_rating").value) || 0;
+      const game_extention_id = parseInt(document.getElementById("game_extention_id").value);
+      const extansion_name = document.getElementById("extansion_name").value;
+
+      const addData = { bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, designer, wanting, artwork_url, publisher, category, meca_g, rating_id, user_rating, average_rating, game_extention_id, extansion_name};
+    
+      try {
+        const response = await fetch("http://localhost:3000/api/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(addData)
+        });
+
+        const results = await response.json();
+
+        if (response.ok) {
+          alert("Tout est ok", results);
+        }
+      }
+
+      catch (error) {
+        console.error("Add error:", error);
+      }
+    });
+  }
 });
