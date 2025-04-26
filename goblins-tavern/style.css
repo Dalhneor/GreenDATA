@@ -691,3 +691,8 @@ body.reco-page {
     gap: 1rem;
   }
   
+  .required {
+    color: red;
+    font-weight: bold;
+  }
+  
