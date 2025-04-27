@@ -115,7 +115,7 @@ app.post('/api/add', (req, res) => {
     const insertMultiple = (valuesString, insertTable, linkTable, nameColumn, linkNameColumn) => {
       if (!valuesString) return;
 
-      const values = valuesString.split(',').map(val => val.trim());
+      const values = Array.isArray(valuesString) ? valuesString : valuesString.split(',').map(val => val.trim());
       values.forEach(value => {
         db.get(`SELECT ${nameColumn} FROM ${insertTable} WHERE ${nameColumn} = ?`, [value], (err, row) => {
           if (err) {
@@ -123,16 +123,24 @@ app.post('/api/add', (req, res) => {
             return;
           }
 
+          const insertRelation = () => {
+            db.run(`INSERT INTO ${linkTable} (id_bg, ${linkNameColumn}) VALUES (?, ?)`, [bg_id, value], (err) => {
+              if (err) {
+                console.error(`Error inserting into ${linkTable}:`, err.message);
+              }
+            });
+          };
+
           if (!row) {
             db.run(`INSERT INTO ${insertTable} (${nameColumn}) VALUES (?)`, [value], (err) => {
               if (err) {
                 console.error(`Error inserting into ${insertTable}:`, err.message);
                 return;
               }
-              db.run(`INSERT INTO ${linkTable} (id_bg, ${linkNameColumn}) VALUES (?, ?)`, [bg_id, value]);
+              insertRelation();
             });
           } else {
-            db.run(`INSERT INTO ${linkTable} (id_bg, ${linkNameColumn}) VALUES (?, ?)`, [bg_id, value]);
+            insertRelation();
           }
         });
       });
