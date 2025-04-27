@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
   
-      showConfirmation(`Are you sure you want to delete the board game "${game.name}" with ID "${deleteID}"?`, async() => {
+      showConfirmation(`Are you sure you want to delete the board game ${game.name} with ID "${deleteID}"?`, async() => {
         try {
           const response = await fetch(`http://localhost:3000/api/boardgames/${deleteID}`, {
             method: 'DELETE',
