@@ -81,6 +81,25 @@ app.post('/api/search', (req, res) => {
   });
 });
 
+app.delete('/api/boardgames/:id', (req, res) => {
+  const gameId = req.params.id;
+
+  const sql = `DELETE FROM Board_Game WHERE id_bg = ?`;
+
+  db.run(sql, [gameId], function(err) {
+    if (err) {
+      console.error('Error deleting Board Game:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (this.changes > 0) {
+      res.status(200).json({ message: 'Board Game deleted successfully.' });
+    } else {
+      res.status(404).json({ message: 'Board Game not found.' });
+    }
+  });
+});
+
 app.post('/api/add', (req, res) => {
   const {
     bg_id, title, description, release_date,

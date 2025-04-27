@@ -239,4 +239,67 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  const deleteButton = document.getElementById("deleteBtn");
+  deleteButton.addEventListener("click", deleteBoardGame);
+
+  function deleteBoardGame() {
+    const deleteIDInput = document.querySelector("input[name='DeleteID']");
+    const deleteID = deleteIDInput.value.trim();
+  
+    if (!deleteID) {
+      alert("Please enter a Board Game ID to delete.");
+      return;
+    }
+  
+    showConfirmation(`Are you sure you want to delete the board game with ID "${deleteID}"?`, async() => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/boardgames/${deleteID}`, {
+          method: 'DELETE',
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert("Board Game deleted successfully!");
+        } else {
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+        alert("An error occurred while deleting the board game.");
+      }
+    });
+  }
+
+  function showConfirmation(message, onConfirm) {
+    const modal = document.getElementById('confirmModal');
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmYes = document.getElementById('confirmYes');
+    const confirmNo = document.getElementById('confirmNo');
+  
+    confirmMessage.textContent = message;
+    modal.classList.remove('hidden');
+  
+    const cleanup = () => {
+      modal.classList.add('hidden');
+      confirmYes.removeEventListener('click', onConfirmClick);
+      confirmNo.removeEventListener('click', onCancelClick);
+    };
+  
+    const onConfirmClick = () => {
+      try {
+        onConfirm();
+      } finally {
+        cleanup();
+      }
+    };
+  
+    const onCancelClick = () => {
+      cleanup();
+    };
+  
+    confirmYes.addEventListener('click', onConfirmClick);
+    confirmNo.addEventListener('click', onCancelClick);
+  }
 });
