@@ -43,7 +43,9 @@ app.post('/api/game-details', (req, res) => {
       r.average AS average_rating,
       d.name AS designer_name,
       p.name AS publisher_name,
-      m.name AS mechanic_name
+      m.name AS mechanic_name,
+      bgc.name AS bg_category_name,
+      bge.name AS expansion_name
 
     FROM Board_Game bg
     LEFT JOIN Designed_By AS db ON bg.id_bg = db.id_bg
@@ -53,7 +55,10 @@ app.post('/api/game-details', (req, res) => {
     LEFT JOIN Uses_Mechanic AS um ON bg.id_bg = um.id_bg
     LEFT JOIN BG_Mechanic AS m ON um.mechanic_name = m.name
 
+    LEFT JOIN Is_Of_Category AS cat ON bg.id_bg = cat.id_bg
+    LEFT JOIN BG_Category AS bgc ON cat.category_name = bgc.name
 
+    LEFT JOIN BG_Expansion AS bge ON bg.id_bg = bge.id_bg
     LEFT JOIN Rating AS r ON bg.id_bg = r.id_rating
     
     WHERE bg.id_bg = ?

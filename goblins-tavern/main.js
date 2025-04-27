@@ -130,14 +130,16 @@ document.addEventListener("DOMContentLoaded", () => {
                   <img src="${imageUrl}" alt="${game.name}" style="width: 100%; margin-bottom: 10px;">
                   <p><strong>Description:</strong> ${game.description || "No description available."}</p>
                   <p><strong>Board Game ID:</strong> ${game.id_bg}</p>
-                  <p><strong>Publisher:</strong> ${details.publisher_name || "Unknown"}</p>
-                  <p><strong>Designer:</strong> ${details.designer_name || "Unknown"}</p>
                   <p><strong>Players:</strong> ${game.minplayers} – ${game.maxplayers}</p>
                   <p><strong>Minimum Age:</strong> ${game.minage || "?"} years</p>
+                  <p><strong>Publisher:</strong> ${details.publisher_name || "Unknown"}</p>
+                  <p><strong>Designer:</strong> ${details.designer_name || "Unknown"}</p>
                   <p><strong>Owned:</strong> ${game.owned || 0}</p>
                   <p><strong>Wanted:</strong> ${game.wanting || 0}</p>
                   <p><strong>Mechanic:</strong> ${details.mechanic_name || 0}</p>
-                  <p><strong>Average Rating:</strong> ${details.average_rating || "?"}</p><br>
+                  <p><strong>Category:</strong> ${details.bg_category_name || "Unknown"}</p>
+                  <p><strong>Average Rating:</strong> ${details.average_rating || "?"}</p>
+                  <p><strong>Game Expansion:</strong> ${details.expansion_name || "?"}</p><br>
                 `;
                 
                 sidePanel.style.display = "block";
