@@ -11,5 +11,6 @@ The aim of this project is to create a site featuring a large number of board ga
 
 ## Installation
 
-Make sur you are in ~/GreenDATA/goblins-tavern, open a terminal, and do : 
+Open a terminal and them enter:
+- cd gobelins-tavern 
 - node server.js
