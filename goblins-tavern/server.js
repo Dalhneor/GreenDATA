@@ -7,20 +7,15 @@ const app = express();
 const db = new sqlite3.Database('./database/boardgames.sqlite');
 const PORT = 3000;
 
-
 app.use(cors());
 app.use(express.static('HTML'));
 app.use(express.json());
 
-
 app.get('/api/boardgames', (req, res) => {
   const query = `
     SELECT 
-      bg.*,
-      r.users_rated,
-      r.average
+      bg.*
     FROM Board_Game bg
-    LEFT JOIN Rating r ON bg.id_bg = r.id_rating
     LIMIT 100
   `;
 
@@ -40,16 +35,12 @@ app.post('/api/game-details', (req, res) => {
   const query = `
     SELECT 
       bg.*,
-      r.id_rating AS u_id_rateing,
-      r.average AS average_rating,
-      r.users_rated as u_rated,
       d.name AS designer_name,
       p.name AS publisher_name,
       m.name AS mechanic_name,
       bgc.name AS bg_category_name,
       bge.id_bge AS bgext_id,
       bge.name AS expansion_name
-
     FROM Board_Game bg
     LEFT JOIN Designed_By AS db ON bg.id_bg = db.id_bg
     LEFT JOIN BG_Designer AS d ON db.designer_name = d.name
@@ -57,13 +48,9 @@ app.post('/api/game-details', (req, res) => {
     LEFT JOIN BG_Publisher AS p ON pb.publisher_name = p.name
     LEFT JOIN Uses_Mechanic AS um ON bg.id_bg = um.id_bg
     LEFT JOIN BG_Mechanic AS m ON um.mechanic_name = m.name
-
     LEFT JOIN Is_Of_Category AS cat ON bg.id_bg = cat.id_bg
     LEFT JOIN BG_Category AS bgc ON cat.category_name = bgc.name
-
     LEFT JOIN BG_Expansion AS bge ON bg.id_bg = bge.id_bg
-    LEFT JOIN Rating AS r ON bg.id_bg = r.id_rating
-    
     WHERE bg.id_bg = ?
     GROUP BY bg.id_bg
   `;
@@ -81,7 +68,6 @@ app.post('/api/search', (req, res) => {
 
   let query = `SELECT * FROM Board_Game WHERE 1=1`;
   const params = [];
-
 
   if (year) {
     if (year === "one") query += ` AND yearpublished < 2000`;
@@ -143,7 +129,6 @@ app.get('/api/deletebg/:id', (req, res) => {
   });
 });
 
-
 app.delete('/api/boardgames/:id', (req, res) => {
   const gameId = req.params.id;
 
@@ -152,7 +137,6 @@ app.delete('/api/boardgames/:id', (req, res) => {
     `DELETE FROM Published_By WHERE id_bg = ?`,
     `DELETE FROM Is_Of_Category WHERE id_bg = ?`,
     `DELETE FROM Uses_Mechanic WHERE id_bg = ?`,
-    `DELETE FROM Rating WHERE id_rating = ?`,
     `DELETE FROM BG_Expansion WHERE id_bg = ?`,
     `DELETE FROM Board_Game WHERE id_bg = ?`
   ];
@@ -168,8 +152,6 @@ app.delete('/api/boardgames/:id', (req, res) => {
       }
 
       completed++;
-
-      // Quand toutes les requêtes sont terminées :
       if (completed === queries.length) {
         if (hasError) {
           return res.status(500).json({ error: "Error deleting some related data." });
@@ -187,7 +169,7 @@ app.post('/api/add', (req, res) => {
     min_p, max_p, time_p, minage,
     owned, designer, wanting, artwork_url,
     publisher, category, meca_g,
-    rating_id, user_rating, average_rating,
+    user_rating, average_rating,
     game_extention_id, extansion_name
   } = req.body;
 
@@ -200,11 +182,11 @@ app.post('/api/add', (req, res) => {
 
   const sql = `
     INSERT OR IGNORE INTO Board_Game 
-    (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img, users_rated, average)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(sql, [bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url], function (err) {
+  db.run(sql, [bg_id, title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url, user_rating, average_rating], function (err) {
     if (err) {
       console.error('Error inserting Board_Game:', err.message);
       return res.status(500).json({ error: err.message });
@@ -247,18 +229,9 @@ app.post('/api/add', (req, res) => {
     };
 
     insertMultiple(designer, 'BG_Designer', 'Designed_By', 'designer_name', 'designer_name');
-
     insertMultiple(publisher, 'BG_Publisher', 'Published_By', 'publisher_name', 'publisher_name');
-
     insertMultiple(category, 'BG_Category', 'Is_Of_Category', 'category_name', 'category_name');
-
     insertMultiple(meca_g, 'BG_Mechanic', 'Uses_Mechanic', 'mechanic_name', 'mechanic_name');
-
-    if (rating_id && user_rating !== undefined && average_rating !== undefined) {
-      db.run(`INSERT OR IGNORE INTO Rating (id_rating, users_rated, average, id_bg) VALUES (?, ?, ?, ?)`,
-        [rating_id, user_rating, average_rating, bg_id]);
-      responses.push('Rating inserted');
-    }
 
     if (game_extention_id && extansion_name) {
       db.run(`INSERT OR IGNORE INTO BG_Expansion (id_bge, name, id_bg) VALUES (?, ?, ?)`,
@@ -276,7 +249,7 @@ app.post('/api/update', (req, res) => {
     min_p, max_p, time_p, minage,
     owned, wanting, artwork_url,
     designer, publisher, category, meca_g,
-    rating_id, user_rating, average_rating,
+    user_rating, average_rating,
     game_extention_id, extansion_name
   } = req.body;
 
@@ -286,19 +259,16 @@ app.post('/api/update', (req, res) => {
 
   const queries = [];
 
-  // 1. Update main table Board_Game
   queries.push({
-    sql: `UPDATE Board_Game SET name=?, description=?, yearpublished=?, minplayers=?, maxplayers=?, playingtime=?, minage=?, owned=?, wanting=?, img=? WHERE id_bg=?`,
-    params: [title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url, id_bg]
+    sql: `UPDATE Board_Game SET name=?, description=?, yearpublished=?, minplayers=?, maxplayers=?, playingtime=?, minage=?, owned=?, wanting=?, img=?, users_rated=?, average=? WHERE id_bg=?`,
+    params: [title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url, user_rating, average_rating, id_bg]
   });
 
-  // 2. Clear old relations
   queries.push({ sql: `DELETE FROM Designed_By WHERE id_bg=?`, params: [id_bg] });
   queries.push({ sql: `DELETE FROM Published_By WHERE id_bg=?`, params: [id_bg] });
   queries.push({ sql: `DELETE FROM Is_Of_Category WHERE id_bg=?`, params: [id_bg] });
   queries.push({ sql: `DELETE FROM Uses_Mechanic WHERE id_bg=?`, params: [id_bg] });
 
-  // 3. Update Designer
   if (designer) {
     const designers = designer.split(";").map(d => d.trim());
     designers.forEach(d => {
@@ -307,7 +277,6 @@ app.post('/api/update', (req, res) => {
     });
   }
 
-  // 4. Update Publisher
   if (publisher) {
     const publishers = publisher.split(";").map(p => p.trim());
     publishers.forEach(p => {
@@ -316,7 +285,6 @@ app.post('/api/update', (req, res) => {
     });
   }
 
-  // 5. Update Category
   if (category) {
     const categories = category.split(";").map(c => c.trim());
     categories.forEach(c => {
@@ -325,7 +293,6 @@ app.post('/api/update', (req, res) => {
     });
   }
 
-  // 6. Update Mechanic
   if (meca_g) {
     const mechanics = meca_g.split(";").map(m => m.trim());
     mechanics.forEach(m => {
@@ -334,13 +301,6 @@ app.post('/api/update', (req, res) => {
     });
   }
 
-  // 7. Update Rating
-  queries.push({
-    sql: `INSERT OR REPLACE INTO Rating (id_rating, users_rated, average, id_bg) VALUES (?, ?, ?, ?)`,
-    params: [rating_id, user_rating, average_rating, id_bg]
-  });
-
-  // 8. Update Expansion (optionnel, si renseigné)
   if (game_extention_id && extansion_name) {
     queries.push({
       sql: `INSERT OR REPLACE INTO BG_Expansion (id_bge, name, id_bg) VALUES (?, ?, ?)`,
@@ -348,7 +308,6 @@ app.post('/api/update', (req, res) => {
     });
   }
 
-  // Exécuter les requêtes en séquence
   let index = 0;
   function runNext() {
     if (index >= queries.length) {

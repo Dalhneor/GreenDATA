@@ -17,7 +17,9 @@ db.serialize(() => {
     minage BIT NOT NULL,
     owned MEDIUMINT UNSIGNED,
     wanting SMALLINT UNSIGNED,
-    img TEXT
+    img TEXT,
+    users_rated INTEGER,
+    average REAL
   )`);
 
   const tables = [
@@ -28,13 +30,6 @@ db.serialize(() => {
     `CREATE TABLE IF NOT EXISTS BG_Expansion (
       id_bge INTEGER PRIMARY KEY,
       name VARCHAR(150) NOT NULL,
-      id_bg INTEGER,
-      FOREIGN KEY (id_bg) REFERENCES Board_Game(id_bg)
-    )`,
-    `CREATE TABLE IF NOT EXISTS Rating (
-      id_rating INTEGER PRIMARY KEY,
-      users_rated INTEGER,
-      average REAL,
       id_bg INTEGER,
       FOREIGN KEY (id_bg) REFERENCES Board_Game(id_bg)
     )`
@@ -86,17 +81,13 @@ db.serialize(() => {
       const owned = parseInt(row.owned) || 0;
       const wanting = parseInt(row.wanting) || 0;
       const img = row.thumbnail || '';
-
-      db.run(`INSERT OR IGNORE INTO Board_Game
-        (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img]
-      );
-
       const usersRated = parseInt(row.users_rated) || 0;
       const average = parseFloat(row.average) || 0;
-      db.run(`INSERT OR IGNORE INTO Rating (id_rating, users_rated, average, id_bg) VALUES (?, ?, ?, ?)`,
-        [id, usersRated, average, id]
+
+      db.run(`INSERT OR IGNORE INTO Board_Game
+        (id_bg, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img, users_rated, average)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, name, description, yearpublished, minplayers, maxplayers, playingtime, minage, owned, wanting, img, usersRated, average]
       );
 
       const parseList = (field) => {
@@ -106,9 +97,7 @@ db.serialize(() => {
         if (field.startsWith('[') && field.endsWith(']')) {
           field = field.slice(1, -1);
         }
-        //split ,
         const items = field.split(',');
-        //clean  item
         return items
           .map(item => item.trim().replace(/^['"]|['"]$/g, ''))
           .filter(item => item.length > 0);
@@ -128,7 +117,6 @@ db.serialize(() => {
       insertEntities(parseList(row.boardgamedesigner), 'BG_Designer', 'Designed_By', 'designer_name');
       insertEntities(parseList(row.boardgamepublisher), 'BG_Publisher', 'Published_By', 'publisher_name');
 
-      
       const expansions = parseList(row.boardgameexpansion);
       expansions.forEach((exp, i) => {
         const fakeIdBge = id * 1000 + i;
