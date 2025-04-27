@@ -16,7 +16,7 @@
 
       <div class="nav-links">
         <button class="nav-button" id="logoutButton">LOGOUT</button>
-        <button class="nav-button" id="modifButton">MODIFY</button>
+        <button class="nav-button" id="manageButton">MANAGE</button>
       </div>
 
       <div class="search-container">
@@ -26,12 +26,20 @@
     </nav>
 
     <section >
-        <h2> What a sexy adnimistrator your are ~ </h2>
+        <h2> You're still an administrator</h2>
       </section>
     
       <div class="manage-wrapper">
-        <h2>Enter Game Information</h2>
-        <form id="manageForm" class="manage-form">
+        <h2>Modify Game Information</h2>
+
+        <form class="manage-form">
+          <div style="margin-bottom: 20px;">
+            <label>Search Game by ID: <input type="text" id="searchId" /></label>
+            <button class="submit-button" type="button" id="modifsearchBtn">Load Game</button>
+          </div>
+        </form>
+
+        <form id="modifyForm" class="manage-form" style="display: none;">
           <label>Board Game ID <span class="required">*</span> : <input type="text" name="BD_ID" required /></label>
           <label>Title <span class="required">*</span> : <input type="text" name="Title" required /></label>
           <label>Description <span class="required">*</span> : <textarea name="Description" required></textarea></label>
@@ -55,20 +63,8 @@
           <label>Extention Name: <input type="text" id="extansion_name" name="ExName" /></label>
     
           <div class="form-buttons">
-            <button type="button" class="submit-button" id="addBtn">Add</button>
+            <button type="button" class="submit-button" id="updateBtn">Update</button>
             <button type="reset" class="reset-button">Reset</button>
-          </div>
-
-          <div class="form-block">
-            <h2>Delete Game</h2>
-            <form id="deleteForm" class="manage-form">
-              <label>Board Game ID to delete: <input type="text" name="DeleteID" required /></label>
-  
-              <div class="form-buttons">
-                <button type="button" class="submit-button" id="deleteBtn">Delete</button>
-                <button type="reset" class="reset-button">Reset</button>
-              </div>
-            </form>
           </div>
           
         </form>

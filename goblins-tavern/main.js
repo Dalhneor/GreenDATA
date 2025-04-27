@@ -5,12 +5,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const discoverBtn = document.getElementById("discoverButton");
   const gameSection = document.getElementById("gameSection");
   const logoutBtn = document.getElementById("logoutButton");
+  const manageBtn = document.getElementById("manageButton");
+  const modifyBtn = document.getElementById("modifButton");
   const superGame = document.getElementById("super-games");
 
   if (homeBtn) homeBtn.addEventListener("click", () => window.location.href = "home.html");
   if (recoBtn) recoBtn.addEventListener("click", () => window.location.href = "recommandations.html"); 
   if (loginBtn) loginBtn.addEventListener("click", () => window.location.href = "login.html");
   if (logoutBtn) logoutBtn.addEventListener("click", () => window.location.href = "home.html");
+  if (manageBtn) manageBtn.addEventListener("click", () => window.location.href = "manage.html");
+  if (modifyBtn) modifyBtn.addEventListener("click", () => window.location.href = "modify.html");
   if (superGame) superGame.addEventListener("click", () => window.location.href = "recommandations.html");
   if (discoverBtn && gameSection) {
     discoverBtn.addEventListener("click", () => gameSection.scrollIntoView({ behavior: "smooth" }));
@@ -178,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  //Reset Button
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
       if (searchForm) searchForm.reset();
@@ -185,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  //Add Button
   const addBtn = document.getElementById("addBtn");
 
   if (addBtn) {
@@ -264,8 +270,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  
+
+  //Detele button
   const deleteButton = document.getElementById("deleteBtn");
-  deleteButton.addEventListener("click", deleteBoardGame);
+  
+  if (deleteButton){
+    deleteButton.addEventListener("click", deleteBoardGame);
+  }
 
   async function deleteBoardGame() {
     const deleteIDInput = document.querySelector("input[name='DeleteID']");
@@ -342,5 +354,99 @@ document.addEventListener("DOMContentLoaded", () => {
   
     confirmYes.addEventListener('click', onConfirmClick);
     confirmNo.addEventListener('click', onCancelClick);
+  }
+
+  //Search Modify Button
+  const modifsearchBtn = document.getElementById("modifsearchBtn");
+
+  if (modifsearchBtn) {
+    modifsearchBtn.addEventListener("click", async () => {
+      const searchId = document.getElementById("searchId").value.trim();
+      if (!searchId) {
+        alert("Please enter a game ID to search.");
+        return;
+      }
+      try {
+        const response = await fetch('http://localhost:3000/api/game-details', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_bg: searchId })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Error fetching game details");
+
+        console.log(data)
+        document.querySelector("[name='BD_ID']").value = searchId;
+        document.querySelector("[name='Title']").value = data.name || '';
+        document.querySelector("[name='Description']").value = data.description || '';
+        document.querySelector("[name='ReleaseDate']").value = data.yearpublished || '';
+        document.querySelector("[name='MinP']").value = data.minplayers || '';
+        document.querySelector("[name='MaxP']").value = data.maxplayers || '';
+        document.querySelector("[name='TimeP']").value = data.playingtime || '';
+        document.querySelector("[name='Minage']").value = data.minage || '';
+        document.querySelector("[name='Owned']").value = data.owned || '';
+        document.querySelector("[name='Designer']").value = data.designer_name || '';
+        document.querySelector("[name='Wanting']").value = data.wanting || '';
+        document.querySelector("[name='ArtworkUrl']").value = data.img || '';
+        document.querySelector("[name='Publisher']").value = data.publisher_name || '';
+        document.querySelector("[name='Category']").value = data.bg_category_name || '';
+        document.querySelector("[name='MecaG']").value = data.mechanic_name || '';
+        document.querySelector("[name='IDR']").value = data.u_id_rateing;
+        document.querySelector("[name='UserR']").value = data.u_rated || '';
+        document.querySelector("[name='AvgR']").value = data.average_rating || '';
+        document.querySelector("[name='Ex_IDG']").value = data.bgext_id;
+        document.querySelector("[name='ExName']").value = data.expansion_name || '';
+
+        document.getElementById("modifyForm").style.display = "block";
+
+      } catch (error) {
+        console.error("Error loading game:", error);
+        alert(error.message);
+      }
+    });
+  }
+  //Update Button
+  const updateBtn = document.getElementById("updateBtn");
+  if (updateBtn) {
+    updateBtn.addEventListener("click", async () => {
+      const formData = {
+        id_bg: document.querySelector("[name='BD_ID']").value,
+        title: document.querySelector("[name='Title']").value,
+        description: document.querySelector("[name='Description']").value,
+        release_date: document.querySelector("[name='ReleaseDate']").value,
+        min_p: document.querySelector("[name='MinP']").value,
+        max_p: document.querySelector("[name='MaxP']").value,
+        time_p: document.querySelector("[name='TimeP']").value,
+        minage: document.querySelector("[name='Minage']").value,
+        owned: document.querySelector("[name='Owned']").value,
+        designer: document.querySelector("[name='Designer']").value,
+        wanting: document.querySelector("[name='Wanting']").value,
+        artwork_url: document.querySelector("[name='ArtworkUrl']").value,
+        publisher: document.querySelector("[name='Publisher']").value,
+        category: document.querySelector("[name='Category']").value,
+        meca_g: document.querySelector("[name='MecaG']").value,
+        rating_id: document.querySelector("[name='IDR']").value,
+        user_rating: document.querySelector("[name='UserR']").value,
+        average_rating: document.querySelector("[name='AvgR']").value,
+        game_extention_id: document.querySelector("[name='Ex_IDG']").value,
+        extansion_name: document.querySelector("[name='ExName']").value
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/api/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Error updating game");
+
+        alert("Game updated successfully!");
+        window.location.reload();
+      } catch (error) {
+        console.error("Update error:", error);
+        alert(error.message);
+      }
+    });
   }
 });

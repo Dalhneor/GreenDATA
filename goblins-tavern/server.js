@@ -39,12 +39,15 @@ app.post('/api/game-details', (req, res) => {
 
   const query = `
     SELECT 
-      bg.name,
+      bg.*,
+      r.id_rating AS u_id_rateing,
       r.average AS average_rating,
+      r.users_rated as u_rated,
       d.name AS designer_name,
       p.name AS publisher_name,
       m.name AS mechanic_name,
       bgc.name AS bg_category_name,
+      bge.id_bge AS bgext_id,
       bge.name AS expansion_name
 
     FROM Board_Game bg
@@ -267,6 +270,102 @@ app.post('/api/add', (req, res) => {
   });
 });
 
+app.post('/api/update', (req, res) => {
+  const {
+    id_bg, title, description, release_date,
+    min_p, max_p, time_p, minage,
+    owned, wanting, artwork_url,
+    designer, publisher, category, meca_g,
+    rating_id, user_rating, average_rating,
+    game_extention_id, extansion_name
+  } = req.body;
+
+  if (!id_bg) {
+    return res.status(400).json({ error: "Board Game ID is required." });
+  }
+
+  const queries = [];
+
+  // 1. Update main table Board_Game
+  queries.push({
+    sql: `UPDATE Board_Game SET name=?, description=?, yearpublished=?, minplayers=?, maxplayers=?, playingtime=?, minage=?, owned=?, wanting=?, img=? WHERE id_bg=?`,
+    params: [title, description, release_date, min_p, max_p, time_p, minage, owned, wanting, artwork_url, id_bg]
+  });
+
+  // 2. Clear old relations
+  queries.push({ sql: `DELETE FROM Designed_By WHERE id_bg=?`, params: [id_bg] });
+  queries.push({ sql: `DELETE FROM Published_By WHERE id_bg=?`, params: [id_bg] });
+  queries.push({ sql: `DELETE FROM Is_Of_Category WHERE id_bg=?`, params: [id_bg] });
+  queries.push({ sql: `DELETE FROM Uses_Mechanic WHERE id_bg=?`, params: [id_bg] });
+
+  // 3. Update Designer
+  if (designer) {
+    const designers = designer.split(";").map(d => d.trim());
+    designers.forEach(d => {
+      queries.push({ sql: `INSERT OR IGNORE INTO BG_Designer (name) VALUES (?)`, params: [d] });
+      queries.push({ sql: `INSERT INTO Designed_By (id_bg, designer_name) VALUES (?, ?)`, params: [id_bg, d] });
+    });
+  }
+
+  // 4. Update Publisher
+  if (publisher) {
+    const publishers = publisher.split(";").map(p => p.trim());
+    publishers.forEach(p => {
+      queries.push({ sql: `INSERT OR IGNORE INTO BG_Publisher (name) VALUES (?)`, params: [p] });
+      queries.push({ sql: `INSERT INTO Published_By (id_bg, publisher_name) VALUES (?, ?)`, params: [id_bg, p] });
+    });
+  }
+
+  // 5. Update Category
+  if (category) {
+    const categories = category.split(";").map(c => c.trim());
+    categories.forEach(c => {
+      queries.push({ sql: `INSERT OR IGNORE INTO BG_Category (name) VALUES (?)`, params: [c] });
+      queries.push({ sql: `INSERT INTO Is_Of_Category (id_bg, category_name) VALUES (?, ?)`, params: [id_bg, c] });
+    });
+  }
+
+  // 6. Update Mechanic
+  if (meca_g) {
+    const mechanics = meca_g.split(";").map(m => m.trim());
+    mechanics.forEach(m => {
+      queries.push({ sql: `INSERT OR IGNORE INTO BG_Mechanic (name) VALUES (?)`, params: [m] });
+      queries.push({ sql: `INSERT INTO Uses_Mechanic (id_bg, mechanic_name) VALUES (?, ?)`, params: [id_bg, m] });
+    });
+  }
+
+  // 7. Update Rating
+  queries.push({
+    sql: `INSERT OR REPLACE INTO Rating (id_rating, users_rated, average, id_bg) VALUES (?, ?, ?, ?)`,
+    params: [rating_id, user_rating, average_rating, id_bg]
+  });
+
+  // 8. Update Expansion (optionnel, si renseigné)
+  if (game_extention_id && extansion_name) {
+    queries.push({
+      sql: `INSERT OR REPLACE INTO BG_Expansion (id_bge, name, id_bg) VALUES (?, ?, ?)`,
+      params: [game_extention_id, extansion_name, id_bg]
+    });
+  }
+
+  // Exécuter les requêtes en séquence
+  let index = 0;
+  function runNext() {
+    if (index >= queries.length) {
+      return res.status(200).json({ message: "Game and related data updated successfully!" });
+    }
+    const q = queries[index++];
+    db.run(q.sql, q.params, (err) => {
+      if (err) {
+        console.error(`Error executing: ${q.sql}`, err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      runNext();
+    });
+  }
+
+  runNext();
+});
 
 app.listen(PORT, () => {
   console.log(`Server ready at http://localhost:${PORT}`);
