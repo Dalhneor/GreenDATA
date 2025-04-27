@@ -12,6 +12,4 @@ The aim of this project is to create a site featuring a large number of board ga
 ## Installation
 
 Make sur you are in ~/GreenDATA/goblins-tavern, open a terminal, and do : 
-- npm init -y
-- npm install express cors
 - node server.js
