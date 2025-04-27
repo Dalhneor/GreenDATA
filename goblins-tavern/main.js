@@ -108,18 +108,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
               `;
 
-              card.addEventListener("click", () => {
+              card.addEventListener("click", async () => {
+                console.log(game);
+
+                try {
+                  const response_detail = await fetch("http://localhost:3000/api/game-details", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id_bg: game.id_bg })
+                  });
+              
+                  const details = await response_detail.json();
+              
+                  if (!response.ok) {
+                    throw new Error(details.error || "Failed to fetch game details");
+                  }
+
                 sidePanel.innerHTML = `
                   <button id="closePanel" style="position:absolute;top:10px;right:10px;background:#444;color:white;border:none;border-radius:50%;width:35px;height:35px;font-size:18px;cursor:pointer;">✕</button>
                   <h2 style="margin-top:50px;">${game.name}</h2>
                   <img src="${imageUrl}" alt="${game.name}" style="width: 100%; margin-bottom: 10px;">
                   <p><strong>Description:</strong> ${game.description || "No description available."}</p>
-                  <p><strong>Publisher:</strong> ${game.publisher || "Unknown"}</p>
-                  <p><strong>Designer:</strong> ${game.designer || "Unknown"}</p>
+                  <p><strong>Board Game ID:</strong> ${game.id_bg}</p>
+                  <p><strong>Publisher:</strong> ${details.publisher_name || "Unknown"}</p>
+                  <p><strong>Designer:</strong> ${details.designer_name || "Unknown"}</p>
+                  <p><strong>Players:</strong> ${game.minplayers} – ${game.maxplayers}</p>
                   <p><strong>Minimum Age:</strong> ${game.minage || "?"} years</p>
                   <p><strong>Owned:</strong> ${game.owned || 0}</p>
                   <p><strong>Wanted:</strong> ${game.wanting || 0}</p>
-                  <p><strong>Average Rating:</strong> ${game.average_rating || "?"}</p>
+                  <p><strong>Mechanic:</strong> ${details.mechanic_name || 0}</p>
+                  <p><strong>Average Rating:</strong> ${details.average_rating || "?"}</p><br>
                 `;
                 
                 sidePanel.style.display = "block";
@@ -135,6 +153,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     sidePanel.style.display = "none";
                   }, 300);
                 });
+              } catch (error) {
+                console.error("Error loading game details:", error);
+                alert("Failed to load detailed game info. Please try again.");
+              }
               });
 
               resultsContainer.appendChild(card);
@@ -243,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteButton = document.getElementById("deleteBtn");
   deleteButton.addEventListener("click", deleteBoardGame);
 
-  function deleteBoardGame() {
+  async function deleteBoardGame() {
     const deleteIDInput = document.querySelector("input[name='DeleteID']");
     const deleteID = deleteIDInput.value.trim();
   
@@ -251,25 +273,42 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Please enter a Board Game ID to delete.");
       return;
     }
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/deletebg/${deleteID}`, {
+        method: 'GET'
+      });
   
-    showConfirmation(`Are you sure you want to delete the board game with ID "${deleteID}"?`, async() => {
-      try {
-        const response = await fetch(`http://localhost:3000/api/boardgames/${deleteID}`, {
-          method: 'DELETE',
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          alert("Board Game deleted successfully!");
-        } else {
-          alert(`Error: ${result.message}`);
-        }
-      } catch (error) {
-        console.error("Delete error:", error);
-        alert("An error occurred while deleting the board game.");
+      const game = await response.json();
+  
+      if (!response.ok) {
+        alert(`Game not found: ${game.error}`);
+        return;
       }
+
+  
+      showConfirmation(`Are you sure you want to delete the board game "${game.name}" with ID "${deleteID}"?`, async() => {
+        try {
+          const response = await fetch(`http://localhost:3000/api/boardgames/${deleteID}`, {
+            method: 'DELETE',
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("Board Game deleted successfully!");
+          } else {
+            alert(`Error: ${result.message}`);
+          }
+        } catch (error) {
+          console.error("Delete error:", error);
+          alert("An error occurred while deleting the board game.");
+        }
     });
+    } catch (error) {
+      console.error("Fetch error:", error);
+      alert("An error occurred while trying to find the board game.");
+    }
   }
 
   function showConfirmation(message, onConfirm) {

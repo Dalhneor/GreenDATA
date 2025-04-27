@@ -30,6 +30,43 @@ app.get('/api/boardgames', (req, res) => {
   });
 });
 
+app.post('/api/game-details', (req, res) => {
+  const { id_bg } = req.body;
+
+  if (!id_bg) {
+    return res.status(400).json({ error: "id_bg is required" });
+  }
+
+  const query = `
+    SELECT 
+      bg.name,
+      r.average AS average_rating,
+      d.name AS designer_name,
+      p.name AS publisher_name,
+      m.name AS mechanic_name
+
+    FROM Board_Game bg
+    LEFT JOIN Designed_By AS db ON bg.id_bg = db.id_bg
+    LEFT JOIN BG_Designer AS d ON db.designer_name = d.name
+    LEFT JOIN Published_By AS pb ON bg.id_bg = pb.id_bg
+    LEFT JOIN BG_Publisher AS p ON pb.publisher_name = p.name
+    LEFT JOIN Uses_Mechanic AS um ON bg.id_bg = um.id_bg
+    LEFT JOIN BG_Mechanic AS m ON um.mechanic_name = m.name
+
+
+    LEFT JOIN Rating AS r ON bg.id_bg = r.id_rating
+    
+    WHERE bg.id_bg = ?
+    GROUP BY bg.id_bg
+  `;
+
+  db.get(query, [id_bg], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ error: "Board game not found" });
+
+    res.json(row);
+  });
+});
 
 app.post('/api/search', (req, res) => {
   const { year, minPlayers, maxPlayers, playtime, keywords } = req.body;
@@ -81,22 +118,58 @@ app.post('/api/search', (req, res) => {
   });
 });
 
+app.get('/api/deletebg/:id', (req, res) => {
+  const gameId = req.params.id;
+
+  const sql = `SELECT id_bg, name FROM Board_Game WHERE id_bg = ?`;
+
+  db.get(sql, [gameId], (err, row) => {
+    if (err) {
+      console.error("Error fetching board game:", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    if (!row) {
+      return res.status(404).json({ error: "Board Game not found." });
+    }
+    res.json(row);
+  });
+});
+
+
 app.delete('/api/boardgames/:id', (req, res) => {
   const gameId = req.params.id;
 
-  const sql = `DELETE FROM Board_Game WHERE id_bg = ?`;
+  const queries = [
+    `DELETE FROM Designed_By WHERE id_bg = ?`,
+    `DELETE FROM Published_By WHERE id_bg = ?`,
+    `DELETE FROM Is_Of_Category WHERE id_bg = ?`,
+    `DELETE FROM Uses_Mechanic WHERE id_bg = ?`,
+    `DELETE FROM Rating WHERE id_rating = ?`,
+    `DELETE FROM BG_Expansion WHERE id_bg = ?`,
+    `DELETE FROM Board_Game WHERE id_bg = ?`
+  ];
 
-  db.run(sql, [gameId], function(err) {
-    if (err) {
-      console.error('Error deleting Board Game:', err.message);
-      return res.status(500).json({ error: err.message });
-    }
+  let completed = 0;
+  let hasError = false;
 
-    if (this.changes > 0) {
-      res.status(200).json({ message: 'Board Game deleted successfully.' });
-    } else {
-      res.status(404).json({ message: 'Board Game not found.' });
-    }
+  queries.forEach((sql) => {
+    db.run(sql, [gameId], function (err) {
+      if (err) {
+        console.error("Error executing:", sql, "Error:", err.message);
+        hasError = true;
+      }
+
+      completed++;
+
+      // Quand toutes les requêtes sont terminées :
+      if (completed === queries.length) {
+        if (hasError) {
+          return res.status(500).json({ error: "Error deleting some related data." });
+        } else {
+          return res.status(200).json({ message: "Board Game and all related data deleted successfully!" });
+        }
+      }
+    });
   });
 });
 
