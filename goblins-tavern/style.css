@@ -361,13 +361,7 @@ body.reco-page {
     transition: background-color 0.3s ease, transform 0.2s ease;
   }
   
-  #searchBtn:hover {
-    background-color: #91a074;
-  }
   
-  #resetBtn:hover {
-    background-color: #b04d4d;
-  }
   
   .button-group {
     display: flex;
