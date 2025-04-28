@@ -206,18 +206,11 @@ body, html {
   .social-icons {
     display: flex;
     gap: 15px;
-  }
-  
-  .social-icon {
     width: 30px;
     height: 30px;
-    transition: transform 0.2s ease;
   }
   
-  .social-icon:hover {
-    transform: scale(1.1);
-  }
-  
+
 
   .login-container {
     max-width: 400px;
