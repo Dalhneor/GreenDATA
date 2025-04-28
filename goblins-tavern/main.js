@@ -389,8 +389,8 @@ if (modifsearchBtn) {
       document.querySelector("[name='Publisher']").value = data.publisher_name || '';
       document.querySelector("[name='Category']").value = data.bg_category_name || '';
       document.querySelector("[name='MecaG']").value = data.mechanic_name || '';
-      document.querySelector("[name='UserR']").value = data.user_rating || '';
-      document.querySelector("[name='AvgR']").value = data.average_rating || '';
+      document.querySelector("[name='UserR']").value = data.users_rated || '';
+      document.querySelector("[name='AvgR']").value = data.average || '';
       document.querySelector("[name='Ex_IDG']").value = data.bgext_id || '';
       document.querySelector("[name='ExName']").value = data.expansion_name || '';
 
