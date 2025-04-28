@@ -46,25 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.getElementById("categoryForm");
   const resetBtn = document.getElementById("resetBtn");
 
-  let sidePanel = document.createElement("div");
-  sidePanel.id = "side-panel";
-  sidePanel.style.position = "fixed";
-  sidePanel.style.top = "0";
-  sidePanel.style.right = "0";
-  sidePanel.style.width = "400px";
-  sidePanel.style.height = "100%";
-  sidePanel.style.background = "#222";
-  sidePanel.style.color = "white";
-  sidePanel.style.padding = "20px";
-  sidePanel.style.overflowY = "auto";
-  sidePanel.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
-  sidePanel.style.display = "none";
-  sidePanel.style.zIndex = "1000";
-  sidePanel.style.transition = "transform 0.3s ease, opacity 0.3s ease";
-  sidePanel.style.transform = "translateX(100%)";
-  sidePanel.style.opacity = "0";
-
-  document.body.appendChild(sidePanel);
+  
 
   if (searchBtn) {
     searchBtn.addEventListener("click", async () => {
@@ -112,61 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
               `;
 
-              card.addEventListener("click", async () => {
-                console.log(game);
-
-                try {
-                  const response_detail = await fetch("http://localhost:3000/api/game-details", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id_bg: game.id_bg })
-                  });
               
-                  const details = await response_detail.json();
-              
-                  if (!response_detail.ok) {  // UPDATED: correct check here (response_detail, not response)
-                    throw new Error(details.error || "Failed to fetch game details");
-                  }
-
-                  sidePanel.innerHTML = `
-                    <button id="closePanel" style="position:absolute;top:10px;right:10px;background:#444;color:white;border:none;border-radius:50%;width:35px;height:35px;font-size:18px;cursor:pointer;">✕</button>
-                    <h2 style="margin-top:50px;">${game.name}</h2>
-                    <img src="${imageUrl}" alt="${game.name}" style="width: 100%; margin-bottom: 10px;">
-                    <p><strong>Description:</strong> ${game.description || "No description available."}</p>
-                    <p><strong>Board Game ID:</strong> ${game.id_bg}</p>
-                    <p><strong>Players:</strong> ${game.minplayers} – ${game.maxplayers}</p>
-                    <p><strong>Minimum Age:</strong> ${game.minage || "?"} years</p>
-                    <p><strong>Publisher:</strong> ${details.publisher_name || "Unknown"}</p>
-                    <p><strong>Designer:</strong> ${details.designer_name || "Unknown"}</p>
-                    <p><strong>Owned:</strong> ${game.owned || 0}</p>
-                    <p><strong>Wanted:</strong> ${game.wanting || 0}</p>
-                    <p><strong>Mechanic:</strong> ${details.mechanic_name || "Unknown"}</p>
-                    <p><strong>Category:</strong> ${details.bg_category_name || "Unknown"}</p>
-                    <p><strong>Average Rating:</strong> ${game.average || "?"}</p>
-                    <p><strong>Number of Users that Rated:</strong> ${game.users_rated || "?"}</p>
-                    <p><strong>Game Expansion:</strong> ${details.expansion_name || "?"}</p><br>
-                  `;
-
-                  sidePanel.style.display = "block";
-                  setTimeout(() => {
-                    sidePanel.style.transform = "translateX(0)";
-                    sidePanel.style.opacity = "1";
-                  }, 10);
-
-                  document.getElementById("closePanel").addEventListener("click", () => {
-                    sidePanel.style.transform = "translateX(100%)";
-                    sidePanel.style.opacity = "0";
-                    setTimeout(() => {
-                      sidePanel.style.display = "none";
-                    }, 300);
-                  });
-
-                } catch (error) {
-                  console.error("Error loading game details:", error);
-                  alert("Failed to load detailed game info. Please try again.");
-                }
-              });
-
               resultsContainer.appendChild(card);
             });
           } else {
